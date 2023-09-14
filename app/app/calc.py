@@ -5,4 +5,3 @@ def add(x, y):
 
 def subtract(f, c):
     return f-c
-
