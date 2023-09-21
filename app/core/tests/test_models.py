@@ -1,10 +1,13 @@
 """
 Tests for models.
 """
-from django.test import TestCase
 from decimal import Decimal
-from core import models
+
+from django.test import TestCase
 from django.contrib.auth import get_user_model
+
+from core import models
+
 
 def create_user(email='user@example.com', password='testpass123'):
     """Create a return a new user."""
@@ -24,7 +27,7 @@ class ModelTests(TestCase):
         )
 
         self.assertEqual(user.email, email)
-        self.assertTrue(user.check_password(password)) #we used check_passsword here instead of assertEqual(user.email, email) , b'coz we're checking the hashed password...
+        self.assertTrue(user.check_password(password))
 
     def test_new_user_email_normalized(self):
         """Test email is normalized for new users."""
@@ -38,9 +41,10 @@ class ModelTests(TestCase):
             user = get_user_model().objects.create_user(email, 'sample123')
             self.assertEqual(user.email, expected)
 
-    def test_for_email_exist(self):
+    def test_new_user_without_email_raises_error(self):
+        """Test that creating a user without an email raises a ValueError."""
         with self.assertRaises(ValueError):
-            get_user_model().objects.create_user('','test123')
+            get_user_model().objects.create_user('', 'test123')
 
     def test_create_superuser(self):
         """Test creating a superuser."""
@@ -74,3 +78,13 @@ class ModelTests(TestCase):
         tag = models.Tag.objects.create(user=user, name='Tag1')
 
         self.assertEqual(str(tag), tag.name)
+
+    def test_create_ingredient(self):
+        """Test creating an ingredient is successful."""
+        user = create_user()
+        ingredient = models.Ingredient.objects.create(
+            user=user,
+            name='Ingredient1'
+        )
+
+        self.assertEqual(str(ingredient), ingredient.name)
